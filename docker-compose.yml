@@ -1,0 +1,90 @@
+services:
+  # ======================================
+  # DB for order-service
+  # ======================================
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: cottin
+      POSTGRES_PASSWORD: password
+      POSTGRES_SERVERNAME: cottin
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres-network
+    restart: unless-stopped
+  # ======================================
+  # Graphic interface for order-service
+  # ======================================
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - postgres-network
+    restart: unless-stopped
+  # ======================================
+  # DB for product-service
+  # ======================================
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - ~/apps/mongo:/var/lib/mongodb/data
+    networks:
+      - mongo-network
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=cottin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=product-service
+  # ======================================
+  # Graphic interface for product-service
+  # ======================================
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    depends_on:
+      - mongodb
+    networks:
+      - mongo-network
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=cottin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      - ME_CONFIG_BASICAUTH_USERNAME=cottin
+      - ME_CONFIG_BASICAUTH_PASSWORD=password
+    ports:
+      - "6082:8081"
+    volumes:
+      - ~/apps/mongo-express:/var/lib/mongo-express/data
+# ======================================
+# Networks configuration
+# ======================================
+networks:
+  postgres-network:
+    driver: bridge
+  mongo-network:
+    driver: bridge
+# ======================================
+# Volumes configuration
+# ======================================
+volumes:
+  postgres:
+  pgadmin:
+  mongodb:
+  mongo-express:

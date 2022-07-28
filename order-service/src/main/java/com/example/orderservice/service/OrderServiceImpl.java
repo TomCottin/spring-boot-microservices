@@ -8,6 +8,7 @@ import com.example.orderservice.model.OrderLineItem;
 import com.example.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -51,7 +52,7 @@ public class OrderServiceImpl implements OrderService{
          http://localhost:8082/api/v1/inventory?skuCode=iphone_13&skuCode=iphone_13_red
         */
         InventoryResponseDto[] inventoryResponseArray = webClientBuilder.build().get()
-                .uri("http://localhost:8082/api/v1/inventory",
+                .uri("http://INVENTORY-SERVICE/api/v1/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResponseDto[].class)

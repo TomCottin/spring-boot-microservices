@@ -6,6 +6,6 @@ import com.example.orderservice.model.OrderLineItem;
 
 public interface OrderService {
 
-    void placeOrder(OrderRequestDto orderRequestDto);
+    String placeOrder(OrderRequestDto orderRequestDto);
 
 }

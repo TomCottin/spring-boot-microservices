@@ -6,6 +6,7 @@ import com.example.orderservice.dto.OrderRequestDto;
 import com.example.orderservice.model.Order;
 import com.example.orderservice.model.OrderLineItem;
 import com.example.orderservice.repository.OrderRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -26,7 +27,7 @@ public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
 
-    public void placeOrder(OrderRequestDto orderRequestDto) {
+    public String placeOrder(OrderRequestDto orderRequestDto) {
 
         // Instantiate a new order & set the order number attribute
         Order order = new Order();
@@ -66,6 +67,7 @@ public class OrderServiceImpl implements OrderService{
         if(allProductsInStock) {
             orderRepository.save(order);
             log.info("Order created: {}", order.getId());
+            return "Order placed successfully";
         } else {
             throw new IllegalArgumentException("Product is not in stock, please try again later");
         }

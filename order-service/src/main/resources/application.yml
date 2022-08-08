@@ -15,6 +15,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+# Spring Cloud Eureka Server properties
 eureka:
   instance:
     hostname: localhost
@@ -23,3 +24,45 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://eureka:password@localhost:8761/eureka
+# Spring Boot Actuator properties
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+# Resilience4j properties
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+    instances:
+      inventory:
+        baseConfig: default
+# Resilience4j Timeout properties
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 3s
+    instances:
+      inventory:
+        baseConfig: default
+  # Resilience4j Retry properties
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 5s

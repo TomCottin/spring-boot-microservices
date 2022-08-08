@@ -91,6 +91,15 @@ services:
       ROOT_LOGLEVEL: INFO
     command:
       - start-dev
+  # ======================================
+  # Zipkin Server
+  # ======================================
+  zipkin:
+    restart: unless-stopped
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
 # ======================================
 # Networks configuration
 # ======================================

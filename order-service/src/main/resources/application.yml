@@ -1,5 +1,6 @@
 server:
   port: 8082
+
 spring:
   application:
     name: order-service
@@ -15,6 +16,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+  zipkin.base-url: http://localhost:9411
+  sleuth.sampler.probability: 1.0
+
 # Spring Cloud Eureka Server properties
 eureka:
   instance:
